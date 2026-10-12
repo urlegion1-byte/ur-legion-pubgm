@@ -72,30 +72,65 @@ body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;back
 </div>
 </section>
 <script>
-function setupCopyForm(formId, resultId, heading, fields) {
-  document.getElementById(formId).addEventListener('submit', async e => {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const lines = [heading];
-    for (const [key, label] of fields) lines.push(label + ': ' + (form.get(key) || 'не указано'));
-    const msg = lines.join('\\n');
-    const result = document.getElementById(resultId);
-    try {
-      await navigator.clipboard.writeText(msg);
-      result.textContent = 'Заявка скопирована! Отправь её руководству клана в Telegram.';
-    } catch (err) {
-      result.textContent = 'Скопируй текст заявки и отправь руководству в Telegram:\\n\\n' + msg;
-    }
-    result.style.display = 'block';
-    result.scrollIntoView({behavior:'smooth', block:'nearest'});
-  });
+async function setupCopyForm(formId, resultId, heading, fields) { document.getElementById(formId).addEventListener('submit', async e => { e.preventDefault();
+const form = new FormData(e.currentTarget);
+const data = {};
+
+for (const [key, label] of fields) {
+  data[key] = form.get(key) || "";
 }
-setupCopyForm('playerForm', 'playerResult', 'ЗАЯВКА В ИГРОВОЙ СОСТАВ UR LEGION', [
-  ['nick','Ник'],['uid','PUBG ID'],['age','Возраст'],['city','Город'],['telegram','Telegram'],['mic','Микрофон']
-]);
-setupCopyForm('adminForm', 'adminResult', 'ЗАЯВКА В АДМИНИСТРАЦИЮ UR LEGION', [
-  ['nick','Ник'],['uid','ID'],['age','Возраст'],['city','Город'],['time','Время / график активности'],['why','Почему хочу стать администратором'],['qualities','Качества'],['telegram','Telegram']
-]);
-</script>
+
+const result = document.getElementById(resultId);
+result.textContent = "Отправляем заявку...";
+result.style.display = "block";
+
+const payload = formId === "playerform"
+  ? {
+      type: "player",
+      nickname: data.nick,
+      playerId: data.uid,
+      age: data.age,
+      microphone: data.mic,
+      telegram: data.telegram,
+      city: data.city
+    }
+  : {
+      type: "admin",
+      nickname: data.nick,
+      playerId: data.uid,
+      age: data.age,
+      city: data.city,
+      time: data.time,
+      why: data.why,
+      qualities: data.qualities
+    };
+
+try {
+  const response = await fetch(
+    "https://ur-legion-bot.ur-legion1.workers.dev/",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }
+  );
+
+  const answer = await response.json();
+
+  if (!response.ok || !answer.ok) {
+    throw new Error(answer.error || "Ошибка отправки");
+  }
+
+  result.textContent = "✅ Заявка отправлена руководству UR LEGION!";
+  e.currentTarget.reset();
+} catch (error) {
+  result.textContent =
+    "❌ Не удалось отправить заявку. Попробуй позже.";
+}
+
+result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}); }
+setupCopyForm('playerform', 'playerResult', 'ЗАЯВКА В ИГРОВОЙ СОСТАВ UR LEGION', [ ['nick', 'Ник'], ['uid', 'PUBG ID'], ['age', 'Возраст'], ['city', 'Город'], ['telegram', 'Telegram'], ['mic', 'Микрофон'] ]);
+setupCopyForm('adminForm', 'adminResult', 'ЗАЯВКА В АДМИНИСТРАЦИЮ UR LEGION', [ ['nick', 'Ник'], ['uid', 'ID'], ['age', 'Возраст'], ['city', 'Город'], ['time', 'Время / график активности'], ['why', 'Почему именно ты хочешь стать админом'], ['qualities', 'Какие качества у тебя есть'] ]);
 <footer><span>© UR LEGION · PUBG MOBILE / ULTIMATE ROYALE</span><span>Сильный состав начинается с сильных решений.</span></footer></main>
 </body></html>
