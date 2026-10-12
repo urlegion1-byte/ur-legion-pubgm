@@ -114,7 +114,7 @@ try {
     "https://ur-legion-bot.ur-legion1.workers.dev/",
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "text/plain;charset=UTF-8" },
       body: JSON.stringify(payload)
     }
   );
@@ -133,8 +133,7 @@ try {
 }
 
 result.scrollIntoView({ behavior: "smooth", block: "nearest" });
-});
-}
+}); }
 setupCopyForm("playerForm", "playerResult", "ЗАЯВКА В ИГРОВОЙ СОСТАВ UR LEGION", [
   ["nick", "Ник"],
   ["uid", "PUBG ID"],
