@@ -72,11 +72,13 @@ body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;back
 </div>
 </section>
 <script>
-async function setupCopyForm(formId, resultId, heading, fields) { document.getElementById(formId).addEventListener('submit', async e => { e.preventDefault();
+async function setupCopyForm(formId, resultId, heading, fields) {
+document.getElementById(formId).addEventListener(“submit”, async (e) => {
+e.preventDefault();
 const form = new FormData(e.currentTarget);
 const data = {};
 
-for (const [key, label] of fields) {
+for (const [key] of fields) {
   data[key] = form.get(key) || "";
 }
 
@@ -124,13 +126,28 @@ try {
   result.textContent = "✅ Заявка отправлена руководству UR LEGION!";
   e.currentTarget.reset();
 } catch (error) {
-  result.textContent =
-    "❌ Не удалось отправить заявку. Попробуй позже.";
+  result.textContent = "❌ Не удалось отправить заявку. Попробуй позже.";
 }
 
 result.scrollIntoView({ behavior: "smooth", block: "nearest" });
-}); }
-setupCopyForm('playerform', 'playerResult', 'ЗАЯВКА В ИГРОВОЙ СОСТАВ UR LEGION', [ ['nick', 'Ник'], ['uid', 'PUBG ID'], ['age', 'Возраст'], ['city', 'Город'], ['telegram', 'Telegram'], ['mic', 'Микрофон'] ]);
-setupCopyForm('adminForm', 'adminResult', 'ЗАЯВКА В АДМИНИСТРАЦИЮ UR LEGION', [ ['nick', 'Ник'], ['uid', 'ID'], ['age', 'Возраст'], ['city', 'Город'], ['time', 'Время / график активности'], ['why', 'Почему именно ты хочешь стать админом'], ['qualities', 'Какие качества у тебя есть'] ]);
+});
+}
+setupCopyForm(“playerform”, “playerResult”, “ЗАЯВКА В ИГРОВОЙ СОСТАВ UR LEGION”, [
+[“nick”, “Ник”],
+[“uid”, “PUBG ID”],
+[“age”, “Возраст”],
+[“city”, “Город”],
+[“telegram”, “Telegram”],
+[“mic”, “Микрофон”]
+]);
+setupCopyForm(“adminForm”, “adminResult”, “ЗАЯВКА В АДМИНИСТРАЦИЮ UR LEGION”, [
+[“nick”, “Ник”],
+[“uid”, “ID”],
+[“age”, “Возраст”],
+[“city”, “Город”],
+[“time”, “Время / график активности”],
+[“why”, “Почему именно ты хочешь стать админом”],
+[“qualities”, “Какие качества у тебя есть”]
+]);
 <footer><span>© UR LEGION · PUBG MOBILE / ULTIMATE ROYALE</span><span>Сильный состав начинается с сильных решений.</span></footer></main>
 </body></html>
