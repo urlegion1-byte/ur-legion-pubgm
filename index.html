@@ -72,9 +72,12 @@ body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;back
 </div>
 </section>
 <script>
-async function setupCopyForm(formId, resultId, heading, fields) {
-document.getElementById(formId).addEventListener("submit", async (e) => {
-e.preventDefault();
+async function setupCopyForm(formId, resultId, heading, fields) { const formElement = document.getElementById(formId); const result = document.getElementById(resultId);
+if (!formElement || !result) { console.error("Форма или блок результата не найдены:", formId, resultId); return; }
+formElement.addEventListener("submit", async (e) => { e.preventDefault();
+JavaScript
+
+
 const form = new FormData(e.currentTarget);
 const data = {};
 
@@ -82,11 +85,10 @@ for (const [key] of fields) {
   data[key] = form.get(key) || "";
 }
 
-const result = document.getElementById(resultId);
 result.textContent = "Отправляем заявку...";
 result.style.display = "block";
 
-const payload = formId === "playerform"
+const payload = formId === "playerForm"
   ? {
       type: "player",
       nickname: data.nick,
@@ -127,12 +129,11 @@ try {
   e.currentTarget.reset();
 } catch (error) {
   console.error("Ошибка отправки заявки:", error);
-  result.textContent = "❌ Ошибка: " + error.message;
+  result.textContent = "❌ Не удалось отправить заявку. Проверь соединение и попробуй ещё раз.";
 }
 
 result.scrollIntoView({ behavior: "smooth", block: "nearest" });
-});
-}
+}); }
 setupCopyForm("playerForm", "playerResult", "ЗАЯВКА В ИГРОВОЙ СОСТАВ UR LEGION", [
   ["nick", "Ник"],
   ["uid", "PUBG ID"],
