@@ -126,7 +126,8 @@ try {
   result.textContent = "✅ Заявка отправлена руководству UR LEGION!";
   e.currentTarget.reset();
 } catch (error) {
-  result.textContent = "❌ Не удалось отправить заявку. Попробуй позже.";
+  console.error("Ошибка отправки заявки:", error);
+  result.textContent = "❌ Ошибка: " + error.message;
 }
 
 result.scrollIntoView({ behavior: "smooth", block: "nearest" });
