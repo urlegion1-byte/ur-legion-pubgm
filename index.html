@@ -73,7 +73,7 @@ body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;back
 </section>
 <script>
 async function setupCopyForm(formId, resultId, heading, fields) {
-document.getElementById(formId).addEventListener(“submit”, async (e) => {
+document.getElementById(formId).addEventListener("submit", async (e) => {
 e.preventDefault();
 const form = new FormData(e.currentTarget);
 const data = {};
