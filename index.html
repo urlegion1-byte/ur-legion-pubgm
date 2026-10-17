@@ -72,13 +72,17 @@ body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;back
 </div>
 </section>
 <script>
-async function setupCopyForm(formId, resultId, heading, fields) { const formElement = document.getElementById(formId); const result = document.getElementById(resultId);
-if (!formElement || !result) { console.error("Форма или блок результата не найдены:", formId, resultId); return; }
-formElement.addEventListener("submit", async (e) => { e.preventDefault();
-JavaScript
-
-
-const form = new FormData(e.currentTarget);
+async function setupCopyForm(formId, resultId, heading, fields) {
+const formElement = document.getElementById(formId);
+const result = document.getElementById(resultId);
+
+if (!formElement || !result) return;
+
+formElement.addEventListener("submit", async (e) => {
+e.preventDefault();
+
+const submittedForm = e.currentTarget;
+const form = new FormData(submittedForm);
 const data = {};
 
 for (const [key] of fields) {
@@ -106,7 +110,8 @@ const payload = formId === "playerForm"
       city: data.city,
       time: data.time,
       why: data.why,
-      qualities: data.qualities
+      qualities: data.qualities,
+      telegram: data.telegram
     };
 
 try {
@@ -114,7 +119,9 @@ try {
     "https://ur-legion-bot.ur-legion1.workers.dev/",
     {
       method: "POST",
-      headers: { "Content-Type": "text/plain;charset=UTF-8" },
+      headers: {
+        "Content-Type": "text/plain;charset=UTF-8"
+      },
       body: JSON.stringify(payload)
     }
   );
@@ -126,30 +133,40 @@ try {
   }
 
   result.textContent = "✅ Заявка отправлена руководству UR LEGION!";
-  e.currentTarget.reset();
+  submittedForm.reset();
+
 } catch (error) {
   console.error("Ошибка отправки заявки:", error);
-  result.textContent = "❌ Не удалось отправить заявку. Проверь соединение и попробуй ещё раз.";
+  result.textContent =
+    "❌ Не удалось отправить заявку. Попробуй ещё раз.";
 }
 
-result.scrollIntoView({ behavior: "smooth", block: "nearest" });
-}); }
+result.scrollIntoView({
+  behavior: "smooth",
+  block: "nearest"
+});
+
+});
+}
+
 setupCopyForm("playerForm", "playerResult", "ЗАЯВКА В ИГРОВОЙ СОСТАВ UR LEGION", [
-  ["nick", "Ник"],
-  ["uid", "PUBG ID"],
-  ["age", "Возраст"],
-  ["city", "Город"],
-  ["telegram", "Telegram"],
-  ["mic", "Микрофон"]
+["nick", "Ник"],
+["uid", "PUBG ID"],
+["age", "Возраст"],
+["city", "Город"],
+["telegram", "Telegram"],
+["mic", "Микрофон"]
 ]);
+
 setupCopyForm("adminForm", "adminResult", "ЗАЯВКА В АДМИНИСТРАЦИЮ UR LEGION", [
-  ["nick", "Ник"],
-  ["uid", "ID"],
-  ["age", "Возраст"],
-  ["city", "Город"],
-  ["time", "Время / график активности"],
-  ["why", "Почему именно ты хочешь стать админом"],
-  ["qualities", "Какие качества у тебя есть"]
+["nick", "Ник"],
+["uid", "ID"],
+["age", "Возраст"],
+["city", "Город"],
+["time", "Время / график активности"],
+["why", "Почему именно ты хочешь стать админом"],
+["qualities", "Какие качества у тебя есть"],
+["telegram", "Telegram для связи"]
 ]);
 </script>
 <footer><span>© UR LEGION · PUBG MOBILE / ULTIMATE ROYALE</span><span>Сильный состав начинается с сильных решений.</span></footer></main>
